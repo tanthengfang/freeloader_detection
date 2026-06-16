@@ -223,6 +223,24 @@ function RuleChip({ ruleId }) {
   const r = RULES[ruleId]; if (!r) return null;
   return <span style={{ display: "inline-flex", alignItems: "center", background: "#F4F2EC", color: "#56544E", border: "1px solid #E7E4DC", fontSize: 12, padding: "2px 8px", borderRadius: 6, whiteSpace: "nowrap" }}>{r.name}</span>;
 }
+const RULE_KEY_METRIC = { redeem_abuse: "差额", low_tr: "TR" };
+function RuleChipWithSnap({ ruleId, snap }) {
+  const r = RULES[ruleId]; if (!r) return null;
+  const metricKey = RULE_KEY_METRIC[ruleId];
+  const metricVal = metricKey && snap?.[metricKey];
+  return (
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, background: "#F4F2EC", color: "#56544E", border: "1px solid #E7E4DC", fontSize: 12, padding: "2px 8px", borderRadius: 6, whiteSpace: "nowrap" }}>
+      {r.name}
+      {metricVal && (
+        <>
+          <span style={{ color: "#D4D2CA" }}>·</span>
+          <span style={{ color: "#78766E" }}>{metricKey}</span>
+          <span style={{ fontFamily: MONO, color: "#26241F", fontWeight: 500 }}>{metricVal}</span>
+        </>
+      )}
+    </span>
+  );
+}
 function EvtBadge({ kind }) {
   const m = EVT[kind]; const I = m.icon;
   return <span style={{ display: "inline-flex", alignItems: "center", gap: 5, background: m.bg, color: m.fg, fontSize: 12.5, fontWeight: 500, padding: "3px 9px", borderRadius: 7, whiteSpace: "nowrap" }}><I size={12} />{m.label}</span>;
@@ -544,7 +562,7 @@ export default function RiskReviewConsole() {
                       <tr key={i} style={{ borderBottom: "1px solid #F2F0EA", background: "#fff" }}>
                         <Td><span style={{ fontFamily: MONO, fontSize: 12.5, color: "#78766E", whiteSpace: "nowrap" }}>{e.at}</span></Td>
                         <Td><span style={{ fontFamily: MONO, fontSize: 13 }}>{e.user}</span></Td>
-                        <Td><div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>{e.hits?.map((h, j) => <RuleChip key={j} ruleId={h.rule} />)}</div></Td>
+                        <Td><div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>{e.hits?.map((h, j) => <RuleChipWithSnap key={j} ruleId={h.rule} snap={h.snap} />)}</div></Td>
                         <Td><EvtBadge kind={e.kind} /></Td>
                         <Td><span style={{ fontSize: 12.5, color: "#78766E" }}>{e.by}</span></Td>
                         <Td><span style={{ fontSize: 13 }}>{e.desc}</span></Td>
