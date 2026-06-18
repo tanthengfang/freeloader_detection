@@ -19,7 +19,7 @@ const C = {
 };
 
 const FONT = '-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",Roboto,sans-serif';
-const RULE_LABEL = { redeem_abuse: "兑换透支", low_tr: "流量透支" };
+const RULE_LABEL = { referral_abuse: "推荐滥用", low_tr: "流量透支" };
 
 const now = () => {
   const d = new Date(); const p = (n) => String(n).padStart(2, "0");
@@ -29,7 +29,7 @@ const now = () => {
 const seedRequests = [
   { id: "REQ-1051", userId: "U-8F3A2", changeType: "DOWNGRADE", fromRole: "SVIP", toRole: "BASE",
     source: "SYSTEM", proposer: "system", reason: "系统自动 · 命中待转化用户规则",
-    evidence: { rules: ["redeem_abuse"], snap: { gap: 45, redeemCost: 78, netRecharge: 33 } },
+    evidence: { rules: ["referral_abuse"], snap: { referralCount: 8, activeRate: 6 } },
     createdAt: "2026-06-18 09:12" },
 
   { id: "REQ-1052", userId: "U-5D9E4", changeType: "DOWNGRADE", fromRole: "VIP", toRole: "BASE",
@@ -39,17 +39,17 @@ const seedRequests = [
 
   { id: "REQ-1053", userId: "U-2B7C1", changeType: "DOWNGRADE", fromRole: "SVIP", toRole: "BASE",
     source: "SYSTEM", proposer: "system", reason: "系统自动 · 命中待转化用户规则",
-    evidence: { rules: ["redeem_abuse", "low_tr"], snap: { gap: 120, redeemCost: 168, netRecharge: 48, tr: 0.41, trafficGB: 152 } },
+    evidence: { rules: ["referral_abuse", "low_tr"], snap: { referralCount: 14, activeRate: 4, tr: 0.41, trafficGB: 152 } },
     createdAt: "2026-06-18 09:12" },
 
   { id: "REQ-1057", userId: "U-7H4K2", changeType: "DOWNGRADE", fromRole: "SVIP", toRole: "BASE",
     source: "SYSTEM", proposer: "system", reason: "系统自动 · 命中待转化用户规则",
-    evidence: { rules: ["redeem_abuse"], snap: { gap: 210, redeemCost: 260, netRecharge: 50 } },
+    evidence: { rules: ["referral_abuse"], snap: { referralCount: 21, activeRate: 2 } },
     createdAt: "2026-06-18 09:12" },
 
   { id: "REQ-1058", userId: "U-9X1V5", changeType: "DOWNGRADE", fromRole: "VIP", toRole: "BASE",
     source: "SYSTEM", proposer: "system", reason: "系统自动 · 命中待转化用户规则",
-    evidence: { rules: ["redeem_abuse"], snap: { gap: 62, redeemCost: 95, netRecharge: 33 } },
+    evidence: { rules: ["referral_abuse"], snap: { referralCount: 7, activeRate: 9 } },
     createdAt: "2026-06-18 09:12" },
 
   { id: "REQ-1048", userId: "U-1A0F8", changeType: "DOWNGRADE", fromRole: "VIP", toRole: "BASE",
@@ -260,13 +260,14 @@ export default function RoleChangeApproval() {
                         <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", overflow: "hidden" }}>
                           <span style={{ fontSize: 12.5, color: C.sub, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flexShrink: 1, minWidth: 0 }} title={r.reason}>{r.reason}</span>
                           {r.source === "SYSTEM" && r.evidence && r.evidence.rules.map((rule) => {
-                            const metric = rule === "redeem_abuse" ? `差额 +¥${r.evidence.snap.gap}`
+                            const metric = rule === "referral_abuse"
+                              ? `推荐 ${r.evidence.snap.referralCount} · 活跃率 ${r.evidence.snap.activeRate}%`
                               : rule === "low_tr" ? `TR ${r.evidence.snap.tr}` : null;
                             return (
                               <span key={rule} style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 12, fontWeight: 500, flexShrink: 0,
-                                background: rule === "redeem_abuse" ? C.amberBg : C.blueBg,
-                                color: rule === "redeem_abuse" ? C.amber : C.blue,
-                                border: `1px solid ${rule === "redeem_abuse" ? C.amberLn : C.blueLn}`,
+                                background: rule === "referral_abuse" ? C.amberBg : C.blueBg,
+                                color: rule === "referral_abuse" ? C.amber : C.blue,
+                                border: `1px solid ${rule === "referral_abuse" ? C.amberLn : C.blueLn}`,
                                 borderRadius: 6, padding: "2px 9px", whiteSpace: "nowrap" }}>
                                 {RULE_LABEL[rule]}
                                 {metric && <><span style={{ color: C.muted, margin: "0 2px" }}>·</span><span style={{ fontVariantNumeric: "tabular-nums" }}>{metric}</span></>}
