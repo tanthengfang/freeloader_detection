@@ -28,14 +28,17 @@ const now = () => {
 
 const seedRequests = [
   { id: "REQ-1048", userId: "U-1A0F8", changeType: "DOWNGRADE", fromRole: "VIP", toRole: "BASE",
+    pointsDelta: -280,
     source: "MANUAL", proposer: "alice", reason: "客服核实疑似多人共享账号，先降级观察。",
     evidence: null, createdAt: "2026-06-17 16:40" },
 
   { id: "REQ-1049", userId: "U-6T3W8", changeType: "DOWNGRADE", fromRole: "SVIP", toRole: "BASE",
+    pointsDelta: -520,
     source: "MANUAL", proposer: "bob", reason: "退款套利：连续申请退款后仍持续使用积分兑换的会员权益。",
     evidence: null, createdAt: "2026-06-17 15:22" },
 
   { id: "REQ-1050", userId: "U-2C9Y4", changeType: "RESTORE", fromRole: "BASE", toRole: "VIP",
+    pointsDelta: 150,
     source: "MANUAL", proposer: "carol", reason: "误降级申诉成立，用户已补充付费凭证，申请恢复 VIP。",
     evidence: null, createdAt: "2026-06-17 11:08" },
 
@@ -54,37 +57,55 @@ const seedRequests = [
   { id: "REQ-1064", userId: "U-1K6J3", changeType: "POINTS_CHANGE", pointsDelta: 500,
     source: "MANUAL", proposer: "alice", reason: "系统故障导致用户积分错误扣减，客服核实后补发差额积分。",
     evidence: null, createdAt: "2026-06-17 14:15" },
+
+  { id: "REQ-1065", userId: "U-6B2C8", changeType: "REFUND", fromRole: "SVIP", toRole: "BASE",
+    refundAmount: 299, pointsDeducted: 450,
+    source: "MANUAL", proposer: "alice", reason: "用户申请全额退款，已核实消费记录，SVIP 套餐未满一个月。",
+    evidence: null, createdAt: "2026-06-18 11:30" },
+
+  { id: "REQ-1066", userId: "U-9D4E7", changeType: "REFUND", fromRole: "VIP", toRole: "BASE",
+    refundAmount: 98, pointsDeducted: 120,
+    source: "MANUAL", proposer: "bob", reason: "用户投诉服务质量问题，客服协商部分退款。",
+    evidence: null, createdAt: "2026-06-18 10:50" },
 ];
 
 const seedHistory = [
   { id: "REQ-1051", userId: "U-8F3A2", changeType: "DOWNGRADE", fromRole: "SVIP", toRole: "BASE",
+    pointsDelta: -380,
     source: "SYSTEM", proposer: "system", reason: "系统自动 · 命中待转化用户规则",
     evidence: { rules: ["referral_abuse"], snap: { referralCount: 8, activeRate: 6 } },
     action: "APPROVED", actor: "系统 (自动审批)", decidedAt: "2026-06-18 09:12", note: "", applied: "SVIP → BASE" },
   { id: "REQ-1052", userId: "U-5D9E4", changeType: "DOWNGRADE", fromRole: "VIP", toRole: "BASE",
+    pointsDelta: -210,
     source: "SYSTEM", proposer: "system", reason: "系统自动 · 命中待转化用户规则",
     evidence: { rules: ["low_tr"], snap: { tr: 0.62 } },
     action: "APPROVED", actor: "系统 (自动审批)", decidedAt: "2026-06-18 09:12", note: "", applied: "VIP → BASE" },
   { id: "REQ-1053", userId: "U-2B7C1", changeType: "DOWNGRADE", fromRole: "SVIP", toRole: "BASE",
+    pointsDelta: -510,
     source: "SYSTEM", proposer: "system", reason: "系统自动 · 命中待转化用户规则",
     evidence: { rules: ["referral_abuse", "low_tr"], snap: { referralCount: 14, activeRate: 4, tr: 0.41 } },
     action: "APPROVED", actor: "系统 (自动审批)", decidedAt: "2026-06-18 09:12", note: "", applied: "SVIP → BASE" },
   { id: "REQ-1057", userId: "U-7H4K2", changeType: "DOWNGRADE", fromRole: "SVIP", toRole: "BASE",
+    pointsDelta: -290,
     source: "SYSTEM", proposer: "system", reason: "系统自动 · 命中待转化用户规则",
     evidence: { rules: ["referral_abuse"], snap: { referralCount: 21, activeRate: 2 } },
     action: "APPROVED", actor: "系统 (自动审批)", decidedAt: "2026-06-18 09:12", note: "", applied: "SVIP → BASE" },
   { id: "REQ-1058", userId: "U-9X1V5", changeType: "DOWNGRADE", fromRole: "VIP", toRole: "BASE",
+    pointsDelta: -175,
     source: "SYSTEM", proposer: "system", reason: "系统自动 · 命中待转化用户规则",
     evidence: { rules: ["referral_abuse"], snap: { referralCount: 7, activeRate: 9 } },
     action: "APPROVED", actor: "系统 (自动审批)", decidedAt: "2026-06-18 09:12", note: "", applied: "VIP → BASE" },
   { id: "REQ-1039", userId: "U-7K2P1", changeType: "DOWNGRADE", fromRole: "SVIP", toRole: "BASE",
+    pointsDelta: -340,
     source: "SYSTEM", proposer: "system", reason: "系统自动 · 命中待转化用户规则",
     evidence: { rules: ["low_tr"], snap: { tr: 0.55 } },
     action: "APPROVED", actor: "系统 (自动审批)", decidedAt: "2026-06-16 11:20", note: "", applied: "SVIP → BASE" },
   { id: "REQ-1041", userId: "U-3F8Q1", changeType: "RESTORE", fromRole: "BASE", toRole: "VIP",
+    pointsDelta: 200,
     source: "MANUAL", proposer: "carol", reason: "凭证核实，恢复角色。",
     action: "APPROVED", actor: "alice", decidedAt: "2026-06-16 09:15", note: "凭证齐全，同意恢复。", applied: "BASE → VIP" },
   { id: "REQ-1037", userId: "U-8L2M6", changeType: "DOWNGRADE", fromRole: "VIP", toRole: "BASE",
+    pointsDelta: -190,
     source: "MANUAL", proposer: "carol", reason: "疑似异常流量。",
     action: "REJECTED", actor: "bob", decidedAt: "2026-06-15 14:30", note: "未达流量透支阈值，证据不足，退回。", applied: "无变更" },
   { id: "REQ-1055", userId: "U-5P2Q9", changeType: "BAN", fromRole: "SVIP", toRole: "封禁",
@@ -96,6 +117,14 @@ const seedHistory = [
   { id: "REQ-1054", userId: "U-3W7V2", changeType: "POINTS_CHANGE", pointsDelta: 300,
     source: "MANUAL", proposer: "carol", reason: "活动奖励补发，系统漏发。",
     action: "REJECTED", actor: "alice", decidedAt: "2026-06-13 10:45", note: "活动已截止，不予补发。", applied: "无变更" },
+  { id: "REQ-1060", userId: "U-3A5B9", changeType: "REFUND", fromRole: "VIP", toRole: "BASE",
+    refundAmount: 198, pointsDeducted: 300,
+    source: "MANUAL", proposer: "carol", reason: "用户申请退款，核实有效，VIP 套餐未使用满 7 天。",
+    action: "APPROVED", actor: "alice", decidedAt: "2026-06-17 15:00", note: "退款审核通过。", applied: "退款 ¥198" },
+  { id: "REQ-1059", userId: "U-7G1H4", changeType: "REFUND", fromRole: "SVIP", toRole: "BASE",
+    refundAmount: 388, pointsDeducted: 600,
+    source: "MANUAL", proposer: "bob", reason: "用户申请全额退款，已超出退款有效期。",
+    action: "REJECTED", actor: "bob", decidedAt: "2026-06-16 14:20", note: "超出退款期限，不予受理。", applied: "无变更" },
 ];
 
 function Pill({ children, fg, bg, ln, mono }) {
@@ -109,6 +138,7 @@ const typePill = (t) =>
   (t === "DOWNGRADE" || t === "RESTORE") ? <Pill fg={C.amber} bg={C.amberBg} ln={C.amberLn}>等级更换</Pill>
   : t === "BAN" ? <Pill fg={C.red} bg={C.redBg} ln={C.redLn}>封禁</Pill>
   : t === "POINTS_CHANGE" ? <Pill fg={C.blue} bg={C.blueBg} ln={C.blueLn}>积分更换</Pill>
+  : t === "REFUND" ? <Pill fg={C.violet} bg={C.violetBg} ln={C.violetLn}>退款</Pill>
   : <Pill fg={C.slate} bg={C.slateBg} ln={C.slateLn}>{t}</Pill>;
 const sourcePill = (s) => s === "SYSTEM"
   ? <Pill fg={C.violet} bg={C.violetBg} ln={C.violetLn}>系统自动</Pill>
@@ -136,6 +166,7 @@ export default function RoleChangeApproval() {
   const [tab, setTab] = useState("pending");
   const [typ, setTyp] = useState("ALL");
   const [q, setQ] = useState("");
+  const [hTyp, setHTyp] = useState("ALL");
   const [hAction, setHAction] = useState("ALL");
   const [hActor, setHActor] = useState("ALL");
   const [hQ, setHQ] = useState("");
@@ -154,12 +185,15 @@ export default function RoleChangeApproval() {
   ), [requests, typ, q]);
 
   const hist = useMemo(() => history.filter((h) =>
+    (hTyp === "ALL" ||
+     (hTyp === "LEVEL_CHANGE" && (h.changeType === "DOWNGRADE" || h.changeType === "RESTORE")) ||
+     h.changeType === hTyp) &&
     (hAction === "ALL" || h.action === hAction) &&
     (hActor === "ALL" ||
      (hActor === "SYSTEM" && h.actor === "系统 (自动审批)") ||
      (hActor === "HUMAN" && h.actor !== "系统 (自动审批)")) &&
     (!hQ || h.userId.toLowerCase().includes(hQ.toLowerCase()))
-  ), [history, hAction, hActor, hQ]);
+  ), [history, hTyp, hAction, hActor, hQ]);
 
   const counts = useMemo(() => ({ total: requests.length }), [requests]);
 
@@ -170,6 +204,7 @@ export default function RoleChangeApproval() {
     const applied = action !== "APPROVED" ? "无变更"
       : req.changeType === "POINTS_CHANGE" ? `积分 ${req.pointsDelta > 0 ? "+" : ""}${req.pointsDelta}`
       : req.changeType === "BAN" ? "已封禁"
+      : req.changeType === "REFUND" ? `退款 ¥${req.refundAmount}`
       : `${req.fromRole} → ${req.toRole}`;
     setHistory((h) => [{ ...req, action, actor: "你 (当前管理员)", decidedAt: now(), note: note.trim(), applied }, ...h]);
     setRequests((rs) => rs.filter((r) => r.id !== req.id));
@@ -177,6 +212,7 @@ export default function RoleChangeApproval() {
     flash(action !== "APPROVED" ? `已驳回 · ${req.userId} 无变更`
       : req.changeType === "POINTS_CHANGE" ? `已通过 · ${req.userId} 积分 ${req.pointsDelta > 0 ? "+" : ""}${req.pointsDelta}`
       : req.changeType === "BAN" ? `已通过 · ${req.userId} 已封禁`
+      : req.changeType === "REFUND" ? `已通过 · ${req.userId} 退款 ¥${req.refundAmount}，已降级至 BASE`
       : `已通过 · ${req.userId} ${req.changeType === "RESTORE" ? "已恢复至" : "已降级至"} ${req.toRole}`);
   }
 
@@ -224,7 +260,7 @@ export default function RoleChangeApproval() {
             <div style={{ display: "flex", alignItems: "center", gap: 18, flexWrap: "wrap", padding: "14px 20px" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <span style={{ fontSize: 12, color: C.muted }}>类型</span>
-                <Seg value={typ} set={setTyp} opts={[{ v: "ALL", l: "全部" }, { v: "LEVEL_CHANGE", l: "等级更换" }, { v: "BAN", l: "封禁" }, { v: "POINTS_CHANGE", l: "积分更换" }]} />
+                <Seg value={typ} set={setTyp} opts={[{ v: "ALL", l: "全部" }, { v: "LEVEL_CHANGE", l: "等级更换" }, { v: "BAN", l: "封禁" }, { v: "POINTS_CHANGE", l: "积分更换" }, { v: "REFUND", l: "退款" }]} />
               </div>
               <div style={{ marginLeft: "auto" }}>
                 <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="搜索用户名"
@@ -257,7 +293,9 @@ export default function RoleChangeApproval() {
                           {typePill(r.changeType)}
                           {r.changeType === "POINTS_CHANGE"
                             ? <span style={{ fontSize: 13, fontWeight: 600, fontVariantNumeric: "tabular-nums", color: r.pointsDelta > 0 ? C.green : C.red }}>{r.pointsDelta > 0 ? `+${r.pointsDelta}` : r.pointsDelta} 积分</span>
-                            : <RoleArrow from={r.fromRole} to={r.toRole} />}
+                            : r.changeType === "REFUND"
+                              ? <span style={{ fontSize: 13, fontWeight: 600, fontVariantNumeric: "tabular-nums", color: C.violet }}>¥{r.refundAmount}</span>
+                              : <RoleArrow from={r.fromRole} to={r.toRole} />}
                         </div>
                         <div style={{ fontSize: 12.5, color: C.sub }}>{r.proposer}</div>
                         <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", overflow: "hidden" }}>
@@ -294,6 +332,10 @@ export default function RoleChangeApproval() {
         ) : tab === "history" ? (
           <>
             <div style={{ display: "flex", alignItems: "center", gap: 18, flexWrap: "wrap", padding: "14px 20px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ fontSize: 12, color: C.muted }}>类型</span>
+                <Seg value={hTyp} set={setHTyp} opts={[{ v: "ALL", l: "全部" }, { v: "LEVEL_CHANGE", l: "等级更换" }, { v: "BAN", l: "封禁" }, { v: "POINTS_CHANGE", l: "积分更换" }, { v: "REFUND", l: "退款" }]} />
+              </div>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <span style={{ fontSize: 12, color: C.muted }}>动作</span>
                 <Seg value={hAction} set={setHAction} opts={[{ v: "ALL", l: "全部" }, { v: "APPROVED", l: "通过" }, { v: "REJECTED", l: "驳回" }]} />
@@ -334,7 +376,20 @@ export default function RoleChangeApproval() {
                         <td style={{ padding: "12px 16px", verticalAlign: "middle" }}>
                           {h.changeType === "POINTS_CHANGE"
                             ? <span style={{ fontSize: 13, fontWeight: 600, fontVariantNumeric: "tabular-nums", color: h.pointsDelta > 0 ? C.green : C.red }}>{h.pointsDelta > 0 ? `+${h.pointsDelta}` : h.pointsDelta} 积分</span>
-                            : <RoleArrow from={h.fromRole} to={h.toRole} />}
+                            : h.changeType === "REFUND" && h.action === "APPROVED"
+                              ? <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                                  <span style={{ fontSize: 12.5, fontWeight: 600, fontVariantNumeric: "tabular-nums", color: C.violet }}>退款 ¥{h.refundAmount}</span>
+                                  <RoleArrow from={h.fromRole} to={h.toRole} />
+                                  <span style={{ fontSize: 12, fontVariantNumeric: "tabular-nums", color: C.red }}>−{h.pointsDeducted} 积分</span>
+                                </div>
+                              : (h.changeType === "DOWNGRADE" || h.changeType === "RESTORE") && h.pointsDelta != null
+                                ? <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                                    <RoleArrow from={h.fromRole} to={h.toRole} />
+                                    <span style={{ fontSize: 12, fontVariantNumeric: "tabular-nums", color: h.pointsDelta > 0 ? C.green : C.red }}>
+                                      {h.pointsDelta > 0 ? `+${h.pointsDelta}` : h.pointsDelta} 积分
+                                    </span>
+                                  </div>
+                                : <RoleArrow from={h.fromRole} to={h.toRole} />}
                         </td>
                         <td style={{ padding: "12px 16px", verticalAlign: "middle" }}>
                           {actionPill(h.action)}
@@ -388,6 +443,8 @@ export default function RoleChangeApproval() {
                 ? <> · 将调整积分 <b style={{ color: modal.req.pointsDelta > 0 ? C.green : C.red }}>{modal.req.pointsDelta > 0 ? `+${modal.req.pointsDelta}` : modal.req.pointsDelta}</b>，立即生效。</>
               : modal.req.changeType === "BAN"
                 ? <> · 将封禁用户，当前角色 <b>{modal.req.fromRole}</b>，立即生效。</>
+              : modal.req.changeType === "REFUND"
+                ? <> · 退款 <b style={{ color: C.violet }}>¥{modal.req.refundAmount}</b>，同时扣除 <b>{modal.req.pointsDeducted} 积分</b>，角色降至 <b>BASE</b>，立即生效。</>
               : <> · 将从 <b>{modal.req.fromRole}</b> {modal.req.changeType === "RESTORE" ? "恢复" : "降级"}至 <b>{modal.req.toRole}</b>，立即生效。</>}
           </div>
           <textarea value={note} onChange={(e) => setNote(e.target.value)}
