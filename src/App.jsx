@@ -158,7 +158,8 @@ function RoleArrow({ from, to }) {
   );
 }
 
-const COLS = "28px 110px 182px 78px minmax(140px,1fr) 126px 196px";
+const COLS_BASE  = "28px 110px 182px 78px minmax(140px,1fr) 126px 196px";
+const COLS_BATCH = "20px 28px 110px 182px 78px minmax(140px,1fr) 126px 196px";
 
 export default function RoleChangeApproval() {
   const [requests, setRequests] = useState(seedRequests);
@@ -171,7 +172,10 @@ export default function RoleChangeApproval() {
   const [hActor, setHActor] = useState("ALL");
   const [hQ, setHQ] = useState("");
   const [open, setOpen] = useState({});
+  const [batchMode, setBatchMode] = useState(false);
+  const [selected, setSelected] = useState(new Set());
   const [modal, setModal] = useState(null);
+  const [batchModal, setBatchModal] = useState(null);
   const [note, setNote] = useState("");
   const [toast, setToast] = useState(null);
 
@@ -198,6 +202,26 @@ export default function RoleChangeApproval() {
   const counts = useMemo(() => ({ total: requests.length }), [requests]);
 
   function ask(action, req) { setNote(""); setModal({ action, req }); }
+
+  function confirmBatch() {
+    const { action } = batchModal;
+    const ts = now();
+    const toProcess = requests.filter((r) => selected.has(r.id));
+    const entries = toProcess.map((req) => {
+      const applied = action !== "APPROVED" ? "无变更"
+        : req.changeType === "POINTS_CHANGE" ? `积分 ${req.pointsDelta > 0 ? "+" : ""}${req.pointsDelta}`
+        : req.changeType === "BAN" ? "已封禁"
+        : req.changeType === "REFUND" ? `退款 ¥${req.refundAmount}`
+        : `${req.fromRole} → ${req.toRole}`;
+      return { ...req, action, actor: "你 (当前管理员)", decidedAt: ts, note: note.trim(), applied };
+    });
+    setHistory((h) => [...entries, ...h]);
+    setRequests((rs) => rs.filter((r) => !selected.has(r.id)));
+    setSelected(new Set());
+    setBatchModal(null);
+    setNote("");
+    flash(action === "APPROVED" ? `已批量通过 ${entries.length} 项变更` : `已批量驳回 ${entries.length} 项变更`);
+  }
 
   function confirm() {
     const { action, req } = modal;
@@ -239,6 +263,9 @@ export default function RoleChangeApproval() {
         .act{transition:filter .12s ease}.act:hover{filter:brightness(.97)}
         .row:hover{background:#fbfbfc}.lk{cursor:pointer}
         input,textarea{font-family:${FONT}}::placeholder{color:${C.muted}}
+        input[type=checkbox]{appearance:none;-webkit-appearance:none;width:14px;height:14px;border:1.5px solid #d1d5db;border-radius:3px;background:#fff;cursor:pointer;position:relative;flex-shrink:0;vertical-align:middle}
+        input[type=checkbox]:checked{background:${C.blue};border-color:${C.blue}}
+        input[type=checkbox]:checked::after{content:'';position:absolute;left:3.5px;top:0.5px;width:4px;height:8px;border:2px solid #fff;border-left:none;border-top:none;transform:rotate(45deg)}
       `}</style>
 
       <div style={{ width: "100%", background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, overflow: "hidden", boxSizing: "border-box" }}>
@@ -262,16 +289,36 @@ export default function RoleChangeApproval() {
                 <span style={{ fontSize: 12, color: C.muted }}>类型</span>
                 <Seg value={typ} set={setTyp} opts={[{ v: "ALL", l: "全部" }, { v: "LEVEL_CHANGE", l: "等级更换" }, { v: "BAN", l: "封禁" }, { v: "POINTS_CHANGE", l: "积分更换" }, { v: "REFUND", l: "退款" }]} />
               </div>
-              <div style={{ marginLeft: "auto" }}>
+              <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 8 }}>
                 <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="搜索用户名"
-                  style={{ fontSize: 13, padding: "7px 11px", border: `1px solid ${C.line2}`, borderRadius: 8,background:"white", width: 160, outline: "none", color: C.ink }} />
+                  style={{ fontSize: 13, padding: "7px 11px", border: `1px solid ${C.line2}`, borderRadius: 8, background: "white", width: 160, outline: "none", color: C.ink }} />
+                <button onClick={() => { setBatchMode((b) => { if (b) setSelected(new Set()); return !b; }); }}
+                  style={{ cursor: "pointer", fontFamily: FONT, fontSize: 12.5, fontWeight: 600, padding: "7px 13px", borderRadius: 8, border: `1px solid ${batchMode ? C.blue : C.line2}`, background: batchMode ? C.blue : "#fff", color: batchMode ? "#fff" : C.sub, whiteSpace: "nowrap", transition: "all .15s" }}>
+                  批量操作
+                </button>
               </div>
             </div>
 
+            {batchMode && selected.size > 0 && (
+              <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 20px", background: C.blueBg, borderTop: `1px solid ${C.blueLn}`, borderBottom: `1px solid ${C.blueLn}` }}>
+                <span style={{ fontSize: 13, fontWeight: 600, color: C.blue }}>已选 {selected.size} 项</span>
+                <ActBtn onClick={() => { setNote(""); setBatchModal({ action: "APPROVED" }); }} fg={C.green} bg={C.greenBg} ln={C.greenLn}>批量通过</ActBtn>
+                <ActBtn onClick={() => { setNote(""); setBatchModal({ action: "REJECTED" }); }} fg={C.amber} bg={C.amberBg} ln={C.amberLn}>批量驳回</ActBtn>
+                <button onClick={() => setSelected(new Set())} style={{ marginLeft: "auto", border: "none", background: "none", cursor: "pointer", fontSize: 12.5, color: C.muted }}>取消选择</button>
+              </div>
+            )}
+
             <div style={{ overflowX: "auto" }}>
-              <div style={{ minWidth: 880 }}>
-                <div style={{ display: "grid", gridTemplateColumns: COLS, gap: 10, padding: "9px 20px",
+              <div style={{ minWidth: batchMode ? 920 : 900 }}>
+                <div style={{ display: "grid", gridTemplateColumns: batchMode ? COLS_BATCH : COLS_BASE, gap: 10, padding: "9px 20px",
                   borderTop: `1px solid ${C.line}`, borderBottom: `1px solid ${C.line}`, fontSize: 11.5, color: C.muted, fontWeight: 600 }}>
+                  {batchMode && (
+                    <div>
+                      <input type="checkbox"
+                        checked={pending.length > 0 && pending.every((r) => selected.has(r.id))}
+                        onChange={(e) => setSelected(e.target.checked ? new Set(pending.map((r) => r.id)) : new Set())} />
+                    </div>
+                  )}
                   <div></div><div>用户</div><div>变更</div><div>发起人</div><div>原因</div><div>发起时间</div><div style={{ textAlign: "center" }}>操作</div>
                 </div>
 
@@ -285,7 +332,14 @@ export default function RoleChangeApproval() {
                   const ev = r.evidence;
                   return (
                     <div key={r.id} style={{ borderBottom: `1px solid ${C.line}` }}>
-                      <div className="row" style={{ display: "grid", gridTemplateColumns: COLS, gap: 10, padding: "13px 20px", alignItems: "center" }}>
+                      <div className="row" style={{ display: "grid", gridTemplateColumns: batchMode ? COLS_BATCH : COLS_BASE, gap: 10, padding: "13px 20px", alignItems: "center", background: selected.has(r.id) ? "#f0f7ff" : undefined }}>
+                        {batchMode && (
+                          <div>
+                            <input type="checkbox"
+                              checked={selected.has(r.id)}
+                              onChange={(e) => setSelected((s) => { const n = new Set(s); e.target.checked ? n.add(r.id) : n.delete(r.id); return n; })} />
+                          </div>
+                        )}
                         <div className="lk" onClick={() => setOpen((o) => ({ ...o, [r.id]: !o[r.id] }))}
                           style={{ color: C.muted, fontSize: 12, userSelect: "none", transform: open[r.id] ? "rotate(90deg)" : "none", transition: "transform .12s" }}></div>
                         <div style={{ fontSize: 13, fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>{r.userId}</div>
@@ -430,6 +484,56 @@ export default function RoleChangeApproval() {
           </>
         ) : null}
       </div>
+
+      {batchModal && (() => {
+        const toProcess = requests.filter((r) => selected.has(r.id));
+        const breakdown = toProcess.reduce((acc, r) => {
+          const key = (r.changeType === "DOWNGRADE" || r.changeType === "RESTORE") ? "LEVEL" : r.changeType;
+          acc[key] = (acc[key] || 0) + 1;
+          return acc;
+        }, {});
+        const keyLabel = { LEVEL: "等级更换", BAN: "封禁", POINTS_CHANGE: "积分更换", REFUND: "退款" };
+        const keyColor = { LEVEL: { fg: C.amber, bg: C.amberBg, ln: C.amberLn }, BAN: { fg: C.red, bg: C.redBg, ln: C.redLn }, POINTS_CHANGE: { fg: C.blue, bg: C.blueBg, ln: C.blueLn }, REFUND: { fg: C.violet, bg: C.violetBg, ln: C.violetLn } };
+        const hasBan = !!breakdown.BAN;
+        return (
+        <Overlay onClose={() => setBatchModal(null)}>
+          <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 10 }}>
+            {batchModal.action === "APPROVED" ? "批量通过变更？" : "批量驳回变更？"}
+          </div>
+          <div style={{ background: "#f9fafb", border: `1px solid ${C.line}`, borderRadius: 10, padding: "12px 14px", marginBottom: 12 }}>
+            <div style={{ fontSize: 12, color: C.muted, marginBottom: 8, fontWeight: 600 }}>共 {toProcess.length} 项</div>
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+              {Object.entries(breakdown).map(([key, count]) => {
+                const col = keyColor[key] || { fg: C.slate, bg: C.slateBg, ln: C.slateLn };
+                return (
+                  <span key={key} style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 12.5, fontWeight: 600,
+                    color: col.fg, background: col.bg, border: `1px solid ${col.ln}`, borderRadius: 8, padding: "4px 10px" }}>
+                    {count} {keyLabel[key] || key}
+                  </span>
+                );
+              })}
+            </div>
+            {hasBan && batchModal.action === "APPROVED" && (
+              <div style={{ marginTop: 10, fontSize: 12, color: C.red, display: "flex", alignItems: "center", gap: 5 }}>
+                <span style={{ fontWeight: 700 }}>⚠</span> 包含 {breakdown.BAN} 项封禁操作，生效后不可撤销。
+              </div>
+            )}
+          </div>
+          <textarea value={note} onChange={(e) => setNote(e.target.value)}
+            placeholder={batchModal.action === "REJECTED" ? "驳回原因（必填）" : "备注（可选）"}
+            style={{ width: "100%", boxSizing: "border-box", minHeight: 64, background: "#fff", resize: "vertical", fontSize: 13, padding: 10, border: `1px solid ${C.line2}`, borderRadius: 8, outline: "none", color: C.ink }} />
+          <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 14 }}>
+            <button className="act" onClick={() => setBatchModal(null)} style={ghostBtn}>取消</button>
+            <button className="act" disabled={batchModal.action === "REJECTED" && !note.trim()} onClick={confirmBatch}
+              style={{ ...solidBtn, opacity: batchModal.action === "REJECTED" && !note.trim() ? 0.45 : 1,
+                cursor: batchModal.action === "REJECTED" && !note.trim() ? "not-allowed" : "pointer",
+                background: batchModal.action === "APPROVED" ? C.green : C.amber }}>
+              确认{batchModal.action === "APPROVED" ? "通过" : "驳回"}
+            </button>
+          </div>
+        </Overlay>
+        );
+      })()}
 
       {modal && (
         <Overlay onClose={() => setModal(null)}>
