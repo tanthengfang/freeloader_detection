@@ -316,7 +316,7 @@ export default function RoleChangeApproval() {
         <div style={{ padding: "18px 20px 0" }}>
           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16 }}>
             <div style={{ fontSize: 20, fontWeight: 700, letterSpacing: "-0.01em" }}>
-              {t("角色变更审批台", "Role Change Console")}
+              {t("账号操作审批台", "Account Action Console")}
             </div>
             <button
               onClick={() => setLang((l) => l === "zh" ? "en" : "zh")}
