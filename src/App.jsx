@@ -69,13 +69,13 @@ const seedRequests = [
     evidence: null, createdAt: "2026-06-17 14:15" },
 
   { id: "REQ-1065", userId: "U-6B2C8", changeType: "REFUND", fromRole: "SVIP", toRole: "BASE",
-    refundAmount: 299, pointsDeducted: 450, source: "MANUAL", proposer: "alice",
+    refundAmount: 299, pointsDeducted: 450, source: "MANUAL", proposer: "alice", transactionId: "TXN-20260618-4521",
     reason: "用户申请全额退款，已核实消费记录，SVIP 套餐未满一个月。",
     reasonEn: "User requested full refund; verified purchase history — SVIP plan used less than one month.",
     evidence: null, createdAt: "2026-06-18 11:30" },
 
   { id: "REQ-1066", userId: "U-9D4E7", changeType: "REFUND", fromRole: "VIP", toRole: "BASE",
-    refundAmount: 98, pointsDeducted: 120, source: "MANUAL", proposer: "bob",
+    refundAmount: 98, pointsDeducted: 120, source: "MANUAL", proposer: "bob", transactionId: "TXN-20260618-3847",
     reason: "用户投诉服务质量问题，客服协商部分退款。",
     reasonEn: "User complained about service quality; customer service negotiated a partial refund.",
     evidence: null, createdAt: "2026-06-18 10:50" },
@@ -138,12 +138,12 @@ const seedHistory = [
     action: "REJECTED", actor: "alice", decidedAt: "2026-06-13 10:45",
     note: "活动已截止，不予补发。", noteEn: "Campaign has ended; reissue denied.", applied: "无变更" },
   { id: "REQ-1060", userId: "U-3A5B9", changeType: "REFUND", fromRole: "VIP", toRole: "BASE",
-    refundAmount: 198, pointsDeducted: 300, source: "MANUAL", proposer: "carol",
+    refundAmount: 198, pointsDeducted: 300, source: "MANUAL", proposer: "carol", transactionId: "TXN-20260617-2814",
     reason: "用户申请退款，核实有效，VIP 套餐未使用满 7 天。", reasonEn: "User requested refund; verified valid — VIP plan used less than 7 days.",
     action: "APPROVED", actor: "alice", decidedAt: "2026-06-17 15:00",
     note: "退款审核通过。", noteEn: "Refund approved.", applied: "退款 ¥198" },
   { id: "REQ-1059", userId: "U-7G1H4", changeType: "REFUND", fromRole: "SVIP", toRole: "BASE",
-    refundAmount: 388, pointsDeducted: 600, source: "MANUAL", proposer: "bob",
+    refundAmount: 388, pointsDeducted: 600, source: "MANUAL", proposer: "bob", transactionId: "TXN-20260616-1923",
     reason: "用户申请全额退款，已超出退款有效期。", reasonEn: "User requested full refund; exceeded the refund eligibility window.",
     action: "REJECTED", actor: "bob", decidedAt: "2026-06-16 14:20",
     note: "超出退款期限，不予受理。", noteEn: "Exceeded refund period; request declined.", applied: "无变更" },
@@ -168,8 +168,8 @@ function RoleArrow({ from, to, lang }) {
   );
 }
 
-const COLS_BASE  = "28px 110px 220px 120px minmax(140px,1fr) 126px 196px";
-const COLS_BATCH = "20px 28px 110px 220px 120px minmax(140px,1fr) 126px 196px";
+const COLS_BASE  = "28px 110px 220px 160px 120px minmax(140px,1fr) 100px 196px";
+const COLS_BATCH = "20px 28px 110px 220px 160px 120px minmax(140px,1fr) 100px 196px";
 
 export default function RoleChangeApproval() {
   const [requests, setRequests] = useState(seedRequests);
@@ -394,6 +394,7 @@ export default function RoleChangeApproval() {
                   <div></div>
                   <div>{t("用户", "User")}</div>
                   <div>{t("变更", "Change")}</div>
+                  <div>{t("交易ID", "Transaction ID")}</div>
                   <div>{t("发起人", "Proposer")}</div>
                   <div>{t("原因", "Reason")}</div>
                   <div>{t("发起时间", "Time")}</div>
@@ -430,6 +431,9 @@ export default function RoleChangeApproval() {
                             : r.changeType === "REFUND"
                               ? <span style={{ fontSize: 13, fontWeight: 600, fontVariantNumeric: "tabular-nums", color: C.violet }}>¥{r.refundAmount}</span>
                               : <RoleArrow from={r.fromRole} to={r.toRole} lang={lang} />}
+                        </div>
+                        <div style={{ fontSize: 12, fontVariantNumeric: "tabular-nums", color: r.transactionId ? C.ink : C.muted }}>
+                          {r.transactionId || "—"}
                         </div>
                         <div style={{ fontSize: 12.5, color: C.sub }}>{r.proposer}</div>
                         <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", overflow: "hidden" }}>
@@ -501,7 +505,7 @@ export default function RoleChangeApproval() {
               <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 700 }}>
                 <thead>
                   <tr style={{ background: "#fafafa", borderBottom: `1px solid ${C.line}` }}>
-                    {[t("时间","Time"), t("用户","User"), t("变更","Change"), t("动作","Action"), t("审批人","Approver"), ""].map((h, i) => (
+                    {[t("时间","Time"), t("用户","User"), t("变更","Change"), t("交易ID","Transaction ID"), t("动作","Action"), t("审批人","Approver"), ""].map((h, i) => (
                       <th key={i} style={{ textAlign: "left", fontSize: 11.5, fontWeight: 600, color: C.muted, padding: "9px 16px", whiteSpace: "nowrap" }}>{h}</th>
                     ))}
                   </tr>
@@ -522,9 +526,11 @@ export default function RoleChangeApproval() {
                           <div style={{ fontSize: 11.5, color: C.muted, marginTop: 3 }}>{t("发起：", "By:")} {h.proposer}</div>
                         </td>
                         <td style={{ padding: "12px 16px", verticalAlign: "middle" }}>
-                          {h.changeType === "POINTS_CHANGE"
+                          {h.action === "REJECTED" ? (
+                            <span style={{ fontSize: 12.5, color: C.muted }}>{t("无变更", "No change")}</span>
+                          ) : h.changeType === "POINTS_CHANGE"
                             ? <span style={{ fontSize: 13, fontWeight: 600, fontVariantNumeric: "tabular-nums", color: h.pointsDelta > 0 ? C.green : C.red }}>{h.pointsDelta > 0 ? `+${h.pointsDelta}` : h.pointsDelta} {t("积分", "pts")}</span>
-                            : h.changeType === "REFUND" && h.action === "APPROVED"
+                            : h.changeType === "REFUND"
                               ? <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
                                   <span style={{ fontSize: 12.5, fontWeight: 600, fontVariantNumeric: "tabular-nums", color: C.violet }}>{t("退款", "Refund")} ¥{h.refundAmount}</span>
                                   <RoleArrow from={h.fromRole} to={h.toRole} lang={lang} />
@@ -538,6 +544,11 @@ export default function RoleChangeApproval() {
                                     </span>
                                   </div>
                                 : <RoleArrow from={h.fromRole} to={h.toRole} lang={lang} />}
+                        </td>
+                        <td style={{ padding: "12px 16px", verticalAlign: "middle" }}>
+                          <span style={{ fontSize: 12, fontVariantNumeric: "tabular-nums", color: h.transactionId ? C.ink : C.muted }}>
+                            {h.transactionId || "—"}
+                          </span>
                         </td>
                         <td style={{ padding: "12px 16px", verticalAlign: "middle" }}>
                           {actionPill(h.action)}
