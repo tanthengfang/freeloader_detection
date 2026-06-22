@@ -86,37 +86,37 @@ const seedHistory = [
     pointsDelta: -380, source: "SYSTEM", proposer: "system",
     reason: "系统自动 · 命中待转化用户规则", reasonEn: "Auto · Matched at-risk user rule",
     evidence: { rules: ["referral_abuse"], snap: { referralCount: 8, activeRate: 6 } },
-    action: "APPROVED", actor: "系统 (自动审批)", decidedAt: "2026-06-18 09:12", note: "", applied: "SVIP → BASE" },
+    action: "APPROVED", actor: "系统 (自动审批)", decidedAt: "2026-06-18 09:12", note: "", applied: "SVIP → BASE", creditPointsAfter: 0 },
   { id: "REQ-1052", userId: "U-5D9E4", changeType: "DOWNGRADE", fromRole: "VIP", toRole: "BASE",
     pointsDelta: -210, source: "SYSTEM", proposer: "system",
     reason: "系统自动 · 命中待转化用户规则", reasonEn: "Auto · Matched at-risk user rule",
     evidence: { rules: ["low_tr"], snap: { tr: 0.62 } },
-    action: "APPROVED", actor: "系统 (自动审批)", decidedAt: "2026-06-18 09:12", note: "", applied: "VIP → BASE" },
+    action: "APPROVED", actor: "系统 (自动审批)", decidedAt: "2026-06-18 09:12", note: "", applied: "VIP → BASE", creditPointsAfter: 0 },
   { id: "REQ-1053", userId: "U-2B7C1", changeType: "DOWNGRADE", fromRole: "SVIP", toRole: "BASE",
     pointsDelta: -510, source: "SYSTEM", proposer: "system",
     reason: "系统自动 · 命中待转化用户规则", reasonEn: "Auto · Matched at-risk user rule",
     evidence: { rules: ["referral_abuse", "low_tr"], snap: { referralCount: 14, activeRate: 4, tr: 0.41 } },
-    action: "APPROVED", actor: "系统 (自动审批)", decidedAt: "2026-06-18 09:12", note: "", applied: "SVIP → BASE" },
+    action: "APPROVED", actor: "系统 (自动审批)", decidedAt: "2026-06-18 09:12", note: "", applied: "SVIP → BASE", creditPointsAfter: 0 },
   { id: "REQ-1057", userId: "U-7H4K2", changeType: "DOWNGRADE", fromRole: "SVIP", toRole: "BASE",
     pointsDelta: -290, source: "SYSTEM", proposer: "system",
     reason: "系统自动 · 命中待转化用户规则", reasonEn: "Auto · Matched at-risk user rule",
     evidence: { rules: ["referral_abuse"], snap: { referralCount: 21, activeRate: 2 } },
-    action: "APPROVED", actor: "系统 (自动审批)", decidedAt: "2026-06-18 09:12", note: "", applied: "SVIP → BASE" },
+    action: "APPROVED", actor: "系统 (自动审批)", decidedAt: "2026-06-18 09:12", note: "", applied: "SVIP → BASE", creditPointsAfter: 0 },
   { id: "REQ-1058", userId: "U-9X1V5", changeType: "DOWNGRADE", fromRole: "VIP", toRole: "BASE",
     pointsDelta: -175, source: "SYSTEM", proposer: "system",
     reason: "系统自动 · 命中待转化用户规则", reasonEn: "Auto · Matched at-risk user rule",
     evidence: { rules: ["referral_abuse"], snap: { referralCount: 7, activeRate: 9 } },
-    action: "APPROVED", actor: "系统 (自动审批)", decidedAt: "2026-06-18 09:12", note: "", applied: "VIP → BASE" },
+    action: "APPROVED", actor: "系统 (自动审批)", decidedAt: "2026-06-18 09:12", note: "", applied: "VIP → BASE", creditPointsAfter: 0 },
   { id: "REQ-1039", userId: "U-7K2P1", changeType: "DOWNGRADE", fromRole: "SVIP", toRole: "BASE",
     pointsDelta: -340, source: "SYSTEM", proposer: "system",
     reason: "系统自动 · 命中待转化用户规则", reasonEn: "Auto · Matched at-risk user rule",
     evidence: { rules: ["low_tr"], snap: { tr: 0.55 } },
-    action: "APPROVED", actor: "系统 (自动审批)", decidedAt: "2026-06-16 11:20", note: "", applied: "SVIP → BASE" },
+    action: "APPROVED", actor: "系统 (自动审批)", decidedAt: "2026-06-16 11:20", note: "", applied: "SVIP → BASE", creditPointsAfter: 0 },
   { id: "REQ-1041", userId: "U-3F8Q1", changeType: "RESTORE", fromRole: "BASE", toRole: "VIP",
     pointsDelta: 200, source: "MANUAL", proposer: "carol",
     reason: "凭证核实，恢复角色。", reasonEn: "Credentials verified, role restored.",
     action: "APPROVED", actor: "alice", decidedAt: "2026-06-16 09:15",
-    note: "凭证齐全，同意恢复。", noteEn: "Credentials complete, restoration approved.", applied: "BASE → VIP" },
+    note: "凭证齐全，同意恢复。", noteEn: "Credentials complete, restoration approved.", applied: "BASE → VIP", creditPointsAfter: 200 },
   { id: "REQ-1037", userId: "U-8L2M6", changeType: "DOWNGRADE", fromRole: "VIP", toRole: "BASE",
     pointsDelta: -190, source: "MANUAL", proposer: "carol",
     reason: "疑似异常流量。", reasonEn: "Suspected abnormal traffic.",
@@ -126,12 +126,12 @@ const seedHistory = [
     source: "MANUAL", proposer: "alice",
     reason: "确认恶意刷量，申请封号。", reasonEn: "Confirmed malicious activity, requesting ban.",
     action: "APPROVED", actor: "bob", decidedAt: "2026-06-15 11:20",
-    note: "证据充分，已封禁。", noteEn: "Sufficient evidence; ban applied.", applied: "已封禁" },
+    note: "证据充分，已封禁。", noteEn: "Sufficient evidence; ban applied.", applied: "已封禁", creditPointsAfter: 0 },
   { id: "REQ-1056", userId: "U-8N4K1", changeType: "POINTS_CHANGE", pointsDelta: -1200,
     source: "MANUAL", proposer: "bob",
     reason: "利用积分兑换漏洞套利，扣除违规积分。", reasonEn: "Exploited points redemption loophole for arbitrage; deducting fraudulent points.",
     action: "APPROVED", actor: "alice", decidedAt: "2026-06-14 16:00",
-    note: "核实属实，扣除。", noteEn: "Verified; points deducted.", applied: "积分 -1200" },
+    note: "核实属实，扣除。", noteEn: "Verified; points deducted.", applied: "积分 -1200", creditPointsAfter: 300 },
   { id: "REQ-1054", userId: "U-3W7V2", changeType: "POINTS_CHANGE", pointsDelta: 300,
     source: "MANUAL", proposer: "carol",
     reason: "活动奖励补发，系统漏发。", reasonEn: "Missed campaign reward reissue due to system error.",
@@ -141,7 +141,7 @@ const seedHistory = [
     refundAmount: 198, pointsDeducted: 300, source: "MANUAL", proposer: "carol", transactionId: "TXN-20260617-2814",
     reason: "用户申请退款，核实有效，VIP 套餐未使用满 7 天。", reasonEn: "User requested refund; verified valid — VIP plan used less than 7 days.",
     action: "APPROVED", actor: "alice", decidedAt: "2026-06-17 15:00",
-    note: "退款审核通过。", noteEn: "Refund approved.", applied: "退款 ¥198" },
+    note: "退款审核通过。", noteEn: "Refund approved.", applied: "退款 ¥198", creditPointsAfter: 0 },
   { id: "REQ-1059", userId: "U-7G1H4", changeType: "REFUND", fromRole: "SVIP", toRole: "BASE",
     refundAmount: 388, pointsDeducted: 600, source: "MANUAL", proposer: "bob", transactionId: "TXN-20260616-1923",
     reason: "用户申请全额退款，已超出退款有效期。", reasonEn: "User requested full refund; exceeded the refund eligibility window.",
@@ -189,6 +189,11 @@ export default function RoleChangeApproval() {
   const [note, setNote] = useState("");
   const [toast, setToast] = useState(null);
   const [lang, setLang] = useState("zh");
+  const [userCredits, setUserCredits] = useState({
+    "U-1A0F8": 280, "U-6T3W8": 520, "U-2C9Y4": 0,
+    "U-4X8Z2": 850, "U-7Q3R5": 430, "U-5N2M8": 1200,
+    "U-1K6J3": 200, "U-6B2C8": 450, "U-9D4E7": 120,
+  });
 
   const t = (zh, en) => lang === "en" ? en : zh;
 
@@ -244,14 +249,27 @@ export default function RoleChangeApproval() {
     const { action } = batchModal;
     const ts = now();
     const toProcess = requests.filter((r) => selected.has(r.id));
+    const newCredits = { ...userCredits };
     const entries = toProcess.map((req) => {
       const applied = action !== "APPROVED" ? t("无变更", "No change")
         : req.changeType === "POINTS_CHANGE" ? `${t("积分", "Pts")} ${req.pointsDelta > 0 ? "+" : ""}${req.pointsDelta}`
         : req.changeType === "BAN" ? t("已封禁", "Banned")
         : req.changeType === "REFUND" ? `${t("退款", "Refund")} ¥${req.refundAmount}`
         : `${req.fromRole} → ${req.toRole}`;
-      return { ...req, action, actor: t("你 (当前管理员)", "You (current admin)"), decidedAt: ts, note: note.trim(), applied };
+      let creditPointsAfter = null;
+      if (action === "APPROVED") {
+        if (req.toRole === "BASE" || req.changeType === "BAN") {
+          creditPointsAfter = 0;
+        } else if (req.changeType === "POINTS_CHANGE") {
+          creditPointsAfter = Math.max(0, (newCredits[req.userId] ?? 0) + req.pointsDelta);
+        } else if (req.changeType === "RESTORE") {
+          creditPointsAfter = Math.max(0, (newCredits[req.userId] ?? 0) + (req.pointsDelta || 0));
+        }
+        if (creditPointsAfter !== null) newCredits[req.userId] = creditPointsAfter;
+      }
+      return { ...req, action, actor: t("你 (当前管理员)", "You (current admin)"), decidedAt: ts, note: note.trim(), applied, creditPointsAfter };
     });
+    setUserCredits(newCredits);
     setHistory((h) => [...entries, ...h]);
     setRequests((rs) => rs.filter((r) => !selected.has(r.id)));
     setSelected(new Set());
@@ -269,7 +287,18 @@ export default function RoleChangeApproval() {
       : req.changeType === "BAN" ? t("已封禁", "Banned")
       : req.changeType === "REFUND" ? `${t("退款", "Refund")} ¥${req.refundAmount}`
       : `${req.fromRole} → ${req.toRole}`;
-    setHistory((h) => [{ ...req, action, actor: t("你 (当前管理员)", "You (current admin)"), decidedAt: now(), note: note.trim(), applied }, ...h]);
+    let creditPointsAfter = null;
+    if (action === "APPROVED") {
+      if (req.toRole === "BASE" || req.changeType === "BAN") {
+        creditPointsAfter = 0;
+      } else if (req.changeType === "POINTS_CHANGE") {
+        creditPointsAfter = Math.max(0, (userCredits[req.userId] ?? 0) + req.pointsDelta);
+      } else if (req.changeType === "RESTORE") {
+        creditPointsAfter = Math.max(0, (userCredits[req.userId] ?? 0) + (req.pointsDelta || 0));
+      }
+      if (creditPointsAfter !== null) setUserCredits((uc) => ({ ...uc, [req.userId]: creditPointsAfter }));
+    }
+    setHistory((h) => [{ ...req, action, actor: t("你 (当前管理员)", "You (current admin)"), decidedAt: now(), note: note.trim(), applied, creditPointsAfter }, ...h]);
     setRequests((rs) => rs.filter((r) => r.id !== req.id));
     setModal(null);
     flash(action !== "APPROVED"
@@ -526,7 +555,10 @@ export default function RoleChangeApproval() {
                           {h.action === "REJECTED" ? (
                             <span style={{ fontSize: 12.5, color: C.muted }}>{t("无变更", "No change")}</span>
                           ) : h.changeType === "POINTS_CHANGE"
-                            ? <span style={{ fontSize: 13, fontWeight: 600, fontVariantNumeric: "tabular-nums", color: h.pointsDelta > 0 ? C.green : C.red }}>{h.pointsDelta > 0 ? `+${h.pointsDelta}` : h.pointsDelta} {t("积分", "pts")}</span>
+                            ? <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                                <span style={{ fontSize: 13, fontWeight: 600, fontVariantNumeric: "tabular-nums", color: h.pointsDelta > 0 ? C.green : C.red }}>{h.pointsDelta > 0 ? `+${h.pointsDelta}` : h.pointsDelta} {t("积分", "pts")}</span>
+                                {h.creditPointsAfter != null && <span style={{ fontSize: 11.5, fontVariantNumeric: "tabular-nums", color: C.muted }}>{t("余额", "Balance")}: <b style={{ color: C.ink }}>{h.creditPointsAfter}</b> {t("积分", "pts")}</span>}
+                              </div>
                             : h.changeType === "REFUND"
                               ? <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
                                   <span style={{ fontSize: 12.5, fontWeight: 600, fontVariantNumeric: "tabular-nums", color: C.violet }}>{t("退款", "Refund")} ¥{h.refundAmount}</span>
@@ -539,6 +571,7 @@ export default function RoleChangeApproval() {
                                     <span style={{ fontSize: 12, fontVariantNumeric: "tabular-nums", color: h.pointsDelta > 0 ? C.green : C.red }}>
                                       {h.pointsDelta > 0 ? `+${h.pointsDelta}` : h.pointsDelta} {t("积分", "pts")}
                                     </span>
+                                    {h.creditPointsAfter != null && <span style={{ fontSize: 11.5, fontVariantNumeric: "tabular-nums", color: C.muted }}>{t("余额", "Balance")}: <b style={{ color: C.ink }}>{h.creditPointsAfter}</b> {t("积分", "pts")}</span>}
                                   </div>
                                 : <RoleArrow from={h.fromRole} to={h.toRole} lang={lang} />}
                         </td>
