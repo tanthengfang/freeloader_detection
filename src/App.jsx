@@ -168,8 +168,8 @@ function RoleArrow({ from, to, lang }) {
   );
 }
 
-const COLS_BASE  = "28px 110px 220px 160px 120px minmax(140px,1fr) 100px 196px";
-const COLS_BATCH = "20px 28px 110px 220px 160px 120px minmax(140px,1fr) 100px 196px";
+const COLS_BASE  = "28px 110px 220px 120px minmax(140px,1fr) 126px 196px";
+const COLS_BATCH = "20px 28px 110px 220px 120px minmax(140px,1fr) 126px 196px";
 
 export default function RoleChangeApproval() {
   const [requests, setRequests] = useState(seedRequests);
@@ -394,7 +394,6 @@ export default function RoleChangeApproval() {
                   <div></div>
                   <div>{t("用户", "User")}</div>
                   <div>{t("变更", "Change")}</div>
-                  <div>{t("交易ID", "Transaction ID")}</div>
                   <div>{t("发起人", "Proposer")}</div>
                   <div>{t("原因", "Reason")}</div>
                   <div>{t("发起时间", "Time")}</div>
@@ -432,12 +431,10 @@ export default function RoleChangeApproval() {
                               ? <span style={{ fontSize: 13, fontWeight: 600, fontVariantNumeric: "tabular-nums", color: C.violet }}>¥{r.refundAmount}</span>
                               : <RoleArrow from={r.fromRole} to={r.toRole} lang={lang} />}
                         </div>
-                        <div style={{ fontSize: 12, fontVariantNumeric: "tabular-nums", color: r.transactionId ? C.ink : C.muted }}>
-                          {r.transactionId || "—"}
-                        </div>
                         <div style={{ fontSize: 12.5, color: C.sub }}>{r.proposer}</div>
-                        <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", overflow: "hidden" }}>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 2, overflow: "hidden" }}>
                           <span style={{ fontSize: 12.5, color: C.sub, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flexShrink: 1, minWidth: 0 }} title={lang === "en" ? (r.reasonEn || r.reason) : r.reason}>{lang === "en" ? (r.reasonEn || r.reason) : r.reason}</span>
+                          {r.transactionId && <span style={{ fontSize: 11.5, fontVariantNumeric: "tabular-nums", color: C.muted, cursor: "pointer" }}>{r.transactionId}</span>}
                           {r.source === "SYSTEM" && r.evidence && r.evidence.rules.map((rule) => {
                             const metric = rule === "referral_abuse"
                               ? t(`推荐 ${r.evidence.snap.referralCount} · 活跃率 ${r.evidence.snap.activeRate}%`, `Ref ${r.evidence.snap.referralCount} · Act.Rate ${r.evidence.snap.activeRate}%`)
@@ -505,7 +502,7 @@ export default function RoleChangeApproval() {
               <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 700 }}>
                 <thead>
                   <tr style={{ background: "#fafafa", borderBottom: `1px solid ${C.line}` }}>
-                    {[t("时间","Time"), t("用户","User"), t("变更","Change"), t("交易ID","Transaction ID"), t("动作","Action"), t("审批人","Approver"), ""].map((h, i) => (
+                    {[t("时间","Time"), t("用户","User"), t("变更","Change"), t("动作","Action"), t("审批人","Approver"), ""].map((h, i) => (
                       <th key={i} style={{ textAlign: "left", fontSize: 11.5, fontWeight: 600, color: C.muted, padding: "9px 16px", whiteSpace: "nowrap" }}>{h}</th>
                     ))}
                   </tr>
@@ -546,18 +543,14 @@ export default function RoleChangeApproval() {
                                 : <RoleArrow from={h.fromRole} to={h.toRole} lang={lang} />}
                         </td>
                         <td style={{ padding: "12px 16px", verticalAlign: "middle" }}>
-                          <span style={{ fontSize: 12, fontVariantNumeric: "tabular-nums", color: h.transactionId ? C.ink : C.muted }}>
-                            {h.transactionId || "—"}
-                          </span>
-                        </td>
-                        <td style={{ padding: "12px 16px", verticalAlign: "middle" }}>
                           {actionPill(h.action)}
                         </td>
                         <td style={{ padding: "12px 16px", verticalAlign: "middle", maxWidth: 280 }}>
-                          <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-                            <span style={{ fontSize: 12.5, fontWeight: isAuto ? 400 : 500, color: isAuto ? C.muted : C.ink, whiteSpace: "nowrap" }}>
-                              {isAuto ? t("系统自动", "Auto") : h.actor}
-                            </span>
+                          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+                              <span style={{ fontSize: 12.5, fontWeight: isAuto ? 400 : 500, color: isAuto ? C.muted : C.ink, whiteSpace: "nowrap" }}>
+                                {isAuto ? t("系统自动", "Auto") : h.actor}
+                              </span>
                             {h.evidence && h.evidence.rules.map((rule) => {
                               const metric = rule === "referral_abuse"
                                 ? t(`推荐 ${h.evidence.snap.referralCount} · 活跃率 ${h.evidence.snap.activeRate}%`, `Ref ${h.evidence.snap.referralCount} · Act.Rate ${h.evidence.snap.activeRate}%`)
@@ -573,6 +566,8 @@ export default function RoleChangeApproval() {
                                 </span>
                               );
                             })}
+                            </div>
+                            {h.transactionId && <span style={{ fontSize: 11.5, fontVariantNumeric: "tabular-nums", color: C.muted, cursor: "pointer" }}>{h.transactionId}</span>}
                           </div>
                           {!isAuto && h.note && <div style={{ fontSize: 12, color: C.sub, marginTop: 3, lineHeight: 1.5 }}>{lang === "en" ? (h.noteEn || h.note) : h.note}</div>}
                         </td>
